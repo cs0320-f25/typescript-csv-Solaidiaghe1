@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as readline from "readline";
-import z from "zod";
+import {z, ZodSafeParseResult} from "zod";
 
 /**
  * This is a JSDoc comment. Similar to JavaDoc, it documents a public-facing
@@ -15,7 +15,7 @@ import z from "zod";
  * @param path The path to the file being loaded.
  * @returns a "promise" to produce a 2-d array of cell values
  */
-export async function parseCSV<T>( path: string, schema: z.ZodType<T>): Promise<T[]|string[][]| z.ZodError>{{
+export async function parseCSV<T>( path: string, schema?: z.ZodType<T>): Promise<ZodSafeParseResult<T>[] | string[][] >{{
   // This initial block of code reads from a file in Node.js. The "rl"
   // value can be iterated over in a "for" loop.
     // Create an empty array to hold the results
@@ -26,21 +26,16 @@ export async function parseCSV<T>( path: string, schema: z.ZodType<T>): Promise<
   })
 
   if(schema){
-  const rows: T[] = [];
+    const rows: ZodSafeParseResult<T>[] = [];
     for await (const line of rl) {
-    const values = line.split(",").map((v) => v.trim());
-    const parsed = schema.safeParse(values)
-    if(!parsed.success){
-      return parsed.error
+      const values = line.split(",").map((v) => v.trim());
+      const parsed = schema.safeParse(values);
+      rows.push(parsed)
     }
-    rows.push(parsed.data)
+    return rows;
   }
-  return rows
-  }
-  
   // Create an empty array to hold the results
   let result = []
-  
   // We add the "await" here because file I/O is asynchronous. 
   // We need to force TypeScript to _wait_ for a row before moving on. 
   // More on this in class soon!
