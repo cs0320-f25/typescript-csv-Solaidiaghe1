@@ -15,14 +15,28 @@ import z from "zod";
  * @param path The path to the file being loaded.
  * @returns a "promise" to produce a 2-d array of cell values
  */
-export async function parseCSV(path: string): Promise<string[][]> {
+export async function parseCSV<T>( path: string, schema: z.ZodType<T>): Promise<T[]|string[][]| z.ZodError>{{
   // This initial block of code reads from a file in Node.js. The "rl"
-  // value can be iterated over in a "for" loop. 
+  // value can be iterated over in a "for" loop.
+    // Create an empty array to hold the results
   const fileStream = fs.createReadStream(path);
   const rl = readline.createInterface({
     input: fileStream,
     crlfDelay: Infinity, // handle different line endings
-  });
+  })
+
+  if(schema){
+  const rows: T[] = [];
+    for await (const line of rl) {
+    const values = line.split(",").map((v) => v.trim());
+    const parsed = schema.safeParse(values)
+    if(!parsed.success){
+      return parsed.error
+    }
+    rows.push(parsed.data)
+  }
+  return rows
+  }
   
   // Create an empty array to hold the results
   let result = []
@@ -31,9 +45,11 @@ export async function parseCSV(path: string): Promise<string[][]> {
   // We need to force TypeScript to _wait_ for a row before moving on. 
   // More on this in class soon!
   for await (const line of rl) {
-    const gradingSchema = z.tuple([z.string(), z.coerce.number(), z.string()])
     const values = line.split(",").map((v) => v.trim());
     result.push(values)
   }
   return result
 }
+}
+
+//    const gradingSchema = z.tuple([z.string(), z.coerce.number(), z.string()])
