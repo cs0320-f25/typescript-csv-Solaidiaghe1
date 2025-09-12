@@ -1,6 +1,6 @@
 # Sprint 1: TypeScript CSV
 
-### Task C: Proposing Enhancement
+### Task B: Proposing Enhancement
 
 - #### Step 1: Brainstorm on your own.
 

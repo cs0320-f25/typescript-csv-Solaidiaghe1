@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as readline from "readline";
+import z from "zod";
 
 /**
  * This is a JSDoc comment. Similar to JavaDoc, it documents a public-facing
@@ -30,6 +31,7 @@ export async function parseCSV(path: string): Promise<string[][]> {
   // We need to force TypeScript to _wait_ for a row before moving on. 
   // More on this in class soon!
   for await (const line of rl) {
+    const gradingSchema = z.tuple([z.string(), z.coerce.number(), z.string()])
     const values = line.split(",").map((v) => v.trim());
     result.push(values)
   }
