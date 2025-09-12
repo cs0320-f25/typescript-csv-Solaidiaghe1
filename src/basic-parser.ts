@@ -35,7 +35,7 @@ export async function parseCSV<T>( path: string, schema?: z.ZodType<T>): Promise
     return rows;
   }
   // Create an empty array to hold the results
-  let result = []
+  let result: string[][] = []
   // We add the "await" here because file I/O is asynchronous. 
   // We need to force TypeScript to _wait_ for a row before moving on. 
   // More on this in class soon!
