@@ -32,7 +32,7 @@ test("my own csv first row equals header", async () => {
 });
 
 test("my own csv second row equals John, Doe", async () => {
-  const results = await parseCSV(testingPath, null)
+  const results = await parseCSV(testingPath)
   expect(results[1]).toEqual(["John, Doe", "20", "A"])
 });
 
