@@ -33,9 +33,12 @@ A correct CSV parser should ensure a pretty predicatble behavior along with gene
 - #### 2. Random, On-Demand Generation
 With random generation comes random dimensions of data. There could be mega sizes or minature or spand many rows and/or columns, this all leads to testing the parsers ability to handle different sizes of files. Along with this you can see the rate the files are generated and fed to the parser, this effectively creates a stress test for it to see how much it can handle before (if it does) crash. Back to the varying sizes, this can also introduce the idea or test of consistency in the parsers out put, seeing if it matches rows to columns like how the user wants/expected. A very important and beneficial aspect that comes from vrying data is  the testing of the edge cases that could break the parsers. Some that the creator or developer of the parser forgot or was unaware of outside of things like double qoutes, or white space, or comma within the field.
 - #### 3. Overall experience, Bugs encountered and resolved
-#### Errors/Bugs:N/A
-#### Tests:
+#### Errors/Bugs:
+N/A
+#### Tests: 
+I have created my own csv file to debug the parser give to us. With this I also created my own test. Then, after updating the parser and creating my own zod schema, I re tested the the csv(People Csv) given to us to see if the implementation works.
 #### How To…
+to run the test in the program, in the terminal (making sure youre in the right the directory) cal npm test. This will display what test that pass and those that fail.
 
 #### Team members and contributions (include cs logins):
 N/A
@@ -44,4 +47,5 @@ Jackie Casale: jgcasale
 Vivian wang: vzwang
 samyak jain: sjain08
 #### Total estimated time it took to complete project: 5 hours
-#### Link to GitHub Repo:  
+#### Link to GitHub Repo: 
+https://github.com/cs0320-f25/typescript-csv-Solaidiaghe1.git 
