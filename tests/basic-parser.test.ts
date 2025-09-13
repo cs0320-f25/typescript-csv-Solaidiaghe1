@@ -1,12 +1,15 @@
 import { parseCSV } from "../src/basic-parser";
 import * as path from "path";
+import z from "zod";
 
 
 const PEOPLE_CSV_PATH = path.join(__dirname, "../data/people.csv");
 
 const testingPath = path.join(__dirname, "../data/testing.csv")
+ const gradingSchema = z.tuple([z.string(), z.coerce.number(), z.string()])
+const cs320Schema = z.tuple([z.string(), z.coerce.number().min(0)])
 test("parseCSV yields arrays", async () => {
-  const results = await parseCSV(PEOPLE_CSV_PATH)
+  const results = await parseCSV(PEOPLE_CSV_PATH, cs320Schema)
   
   expect(results).toHaveLength(5);
   expect(results[0]).toEqual(["name", "age"]);
@@ -15,6 +18,7 @@ test("parseCSV yields arrays", async () => {
   expect(results[3]).toEqual(["Charlie", "25"]);
   expect(results[4]).toEqual(["Nim", "22"]);
 });
+
 
 test("my own csv yields array has length 5", async () => {
   const results = await parseCSV(testingPath)
@@ -27,7 +31,7 @@ test("my own csv first row has length 3", async () => {
 });
 
 test("my own csv first row equals header", async () => {
-  const results = await parseCSV(testingPath)
+  const results = await parseCSV(testingPath, gradingSchema)
   expect(results[0]).toEqual(["name", "age", "grade"])
 });
 
@@ -42,7 +46,7 @@ test("my own csv third row equals Betty", async () => {
 });
 
 test("my own csv fourth row equals Fiona Gallagher", async () => {
-  const results = await parseCSV(testingPath)
+  const results = await parseCSV(testingPath, gradingSchema)
   expect(results[3]).toEqual(["Fiona Gallagher", "19", "C"])
 });
 
