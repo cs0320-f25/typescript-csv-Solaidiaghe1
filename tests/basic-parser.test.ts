@@ -1,6 +1,7 @@
 import { parseCSV } from "../src/basic-parser";
 import * as path from "path";
 import z from "zod";
+import { cs } from "zod/v4/locales/index.cjs";
 
 
 const PEOPLE_CSV_PATH = path.join(__dirname, "../data/people.csv");
@@ -9,7 +10,7 @@ const testingPath = path.join(__dirname, "../data/testing.csv")
  const gradingSchema = z.tuple([z.string(), z.coerce.number(), z.string()])
 const cs320Schema = z.tuple([z.string(), z.coerce.number().min(0)])
 test("parseCSV yields arrays", async () => {
-  const results = await parseCSV(PEOPLE_CSV_PATH, cs320Schema)
+  const results = await parseCSV(PEOPLE_CSV_PATH)
   
   expect(results).toHaveLength(5);
   expect(results[0]).toEqual(["name", "age"]);
@@ -31,7 +32,7 @@ test("my own csv first row has length 3", async () => {
 });
 
 test("my own csv first row equals header", async () => {
-  const results = await parseCSV(testingPath, gradingSchema)
+  const results = await parseCSV(testingPath)
   expect(results[0]).toEqual(["name", "age", "grade"])
 });
 
@@ -46,7 +47,7 @@ test("my own csv third row equals Betty", async () => {
 });
 
 test("my own csv fourth row equals Fiona Gallagher", async () => {
-  const results = await parseCSV(testingPath, gradingSchema)
+  const results = await parseCSV(testingPath)
   expect(results[3]).toEqual(["Fiona Gallagher", "19", "C"])
 });
 
@@ -61,4 +62,30 @@ test("parseCSV yields only arrays", async () => {
     expect(Array.isArray(row)).toBe(true);
   }
 
-});
+})
+  //RETESTING THE GIVEN CS320 STUFF
+  test("parseCS320CSV yields 5 rows", async () => {
+    const results = await parseCSV(PEOPLE_CSV_PATH, cs320Schema);
+    expect(results).toHaveLength(5);
+  });
+
+  test("parseCS320CSV: first row schema", async () => {
+    const results = await parseCSV(PEOPLE_CSV_PATH, cs320Schema);
+    expect(cs320Schema.safeParse(["Alice", "23"]).success).toBe(true);
+  });
+
+  test("parseCS320CSV: second row passes schema", async () => {
+    const results = await parseCSV(PEOPLE_CSV_PATH, cs320Schema);
+    expect(cs320Schema.safeParse(["Bob", "thirty"]).success).toBe(false);
+  });
+
+  test("parseCS320CSV: third row fails schema", async () => {
+    const results = await parseCSV(PEOPLE_CSV_PATH, cs320Schema);
+    expect(cs320Schema.safeParse(["Charlie", "25"]).success).toBe(true);
+  });
+
+  test("row 3 with negative number", async () => {
+    const results = await parseCSV(PEOPLE_CSV_PATH, cs320Schema);
+    expect(cs320Schema.safeParse(["Nim", "-22"]).success).toBe(false);
+  });
+
