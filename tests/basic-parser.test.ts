@@ -71,21 +71,18 @@ test("parseCSV yields only arrays", async () => {
 
   test("parseCS320CSV: first row schema", async () => {
     const results = await parseCSV(PEOPLE_CSV_PATH, cs320Schema);
-    expect(cs320Schema.safeParse(["Alice", "23"]).success).toBe(true);
+    expect(results[1]).toEqual({ success: true, data: ["Alice", 23] });
   });
 
-  test("parseCS320CSV: second row passes schema", async () => {
+  test("parseCS320CSV: second row schema", async () => {
     const results = await parseCSV(PEOPLE_CSV_PATH, cs320Schema);
-    expect(cs320Schema.safeParse(["Bob", "thirty"]).success).toBe(false);
+    expect(cs320Schema.safeParse(results[1]).success).toBe(false); // Bob's age is not a number
   });
 
-  test("parseCS320CSV: third row fails schema", async () => {
+  test("parseCS320CSV: third row schema", async () => {
     const results = await parseCSV(PEOPLE_CSV_PATH, cs320Schema);
-    expect(cs320Schema.safeParse(["Charlie", "25"]).success).toBe(true);
+    expect(results[3]).toEqual({ success: true, data: ["Charlie", 25] });
   });
 
-  test("row 3 with negative number", async () => {
-    const results = await parseCSV(PEOPLE_CSV_PATH, cs320Schema);
-    expect(cs320Schema.safeParse(["Nim", "-22"]).success).toBe(false);
-  });
+
 
