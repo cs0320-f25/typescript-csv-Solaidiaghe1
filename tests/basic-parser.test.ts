@@ -76,7 +76,7 @@ test("parseCSV yields only arrays", async () => {
 
   test("parseCS320CSV: second row schema", async () => {
     const results = await parseCSV(PEOPLE_CSV_PATH, cs320Schema);
-    expect(cs320Schema.safeParse(results[1]).success).toBe(false); // Bob's age is not a number
+    expect(cs320Schema.safeParse(results[2]).success).toBe(false); // Bob's age is not a number
   });
 
   test("parseCS320CSV: third row schema", async () => {
